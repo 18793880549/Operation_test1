@@ -5,51 +5,51 @@
 #include <cstdlib>
 #include <fstream>
 #include <string>
-#include <iomanip>    //coutÊä³ö¿ØÖÆĞ¡ÊıÎ»Êı£¬cout<<fixed << setprecision(x)<<¸¡µãÊı£»
+#include <iomanip>    //coutè¾“å‡ºæ§åˆ¶å°æ•°ä½æ•°ï¼Œcout<<fixed << setprecision(x)<<æµ®ç‚¹æ•°ï¼›
 using namespace std;
 
-#define FILE_PATH "E:/Demo.txt"  // ÎÄ¼şÂ·¾¶
+#define FILE_PATH "E:/Demo.txt"  // æ–‡ä»¶è·¯å¾„
 
-char Arithmetic_brackets[4] = { '(' , ' ' , ')' , ' ' }; //À¨ºÅ
-char Arithmetic_operators[4] = { '+' , '-' , '*' , '/' }; //ÔËËã·û
-const int Arithmetic_operation = 4; //Éú³ÉËæ»úÔËËã·û
-const int Arithmetic_bracket = 2; //Éú³ÉËæ»úÀ¨ºÅ 
-const int Arithmetic_bracket_position = 3;  //Éú³ÉËæ»úÀ¨ºÅÎ»ÖÃ
-int Arithmetic_number; //ÌâÄ¿ÊıÄ¿
-int Arithmetic_max; //×î´óÊı
-int Arithmetic_iffile;   //È·¶¨ÊÇ·ñ´òÓ¡
-int Arithmetic_ifdecimal;  //È·¶¨ÊÇ·ñÓĞĞ¡Êı
-int Arithmetic_ifbrackets;  //È·¶¨ÊÇ·ñÓĞÀ¨ºÅ
-char* dt;   //µ±µØÊ±¼ä
-FILE* fp;   //ÎÄ¼şµØÖ·
+char Arithmetic_brackets[4] = { '(' , ' ' , ')' , ' ' }; //æ‹¬å·
+char Arithmetic_operators[4] = { '+' , '-' , '*' , '/' }; //è¿ç®—ç¬¦
+const int Arithmetic_operation = 4; //ç”Ÿæˆéšæœºè¿ç®—ç¬¦
+const int Arithmetic_bracket = 2; //ç”Ÿæˆéšæœºæ‹¬å· 
+const int Arithmetic_bracket_position = 3;  //ç”Ÿæˆéšæœºæ‹¬å·ä½ç½®
+int Arithmetic_number; //é¢˜ç›®æ•°ç›®
+int Arithmetic_max; //æœ€å¤§æ•°
+int Arithmetic_iffile;   //ç¡®å®šæ˜¯å¦æ‰“å°
+int Arithmetic_ifdecimal;  //ç¡®å®šæ˜¯å¦æœ‰å°æ•°
+int Arithmetic_ifbrackets;  //ç¡®å®šæ˜¯å¦æœ‰æ‹¬å·
+char* dt;   //å½“åœ°æ—¶é—´
+FILE* fp;   //æ–‡ä»¶åœ°å€
 
-void showMenu();    //»¶Ó­½çÃæ
-void showExit();    //ÍË³ö½çÃæ
-void Arithmetic_Output_Screen();//ÆÁÄ»Êä³öº¯Êı
-void Arithmetic_Output_File();  //ÎÄ±¾Êä³öº¯Êı
-void getTime(); //»ñÈ¡ÈÕÆÚºÍÊ±¼ä
+void showMenu();    //æ¬¢è¿ç•Œé¢
+void showExit();    //é€€å‡ºç•Œé¢
+void Arithmetic_Output_Screen();//å±å¹•è¾“å‡ºå‡½æ•°
+void Arithmetic_Output_File();  //æ–‡æœ¬è¾“å‡ºå‡½æ•°
+void getTime(); //è·å–æ—¥æœŸå’Œæ—¶é—´
 
 void showMenu()
 {
-    system("title Ğ¡Ñ§ËÄÔòÔËËã×Ô¶¯Éú³É³ÌĞò");
-    system("mode con cols=90 lines=40");//¸Ä±ä¿ØÖÆÌ¨¿í¶ÈºÍ¸ß¶È
-    system("color f0");//¸Ä±ä±³¾°ÑÕÉ«
+    system("title å°å­¦å››åˆ™è¿ç®—è‡ªåŠ¨ç”Ÿæˆç¨‹åº");
+    system("mode con cols=90 lines=40");//æ”¹å˜æ§åˆ¶å°å®½åº¦å’Œé«˜åº¦
+    system("color f0");//æ”¹å˜èƒŒæ™¯é¢œè‰²
     system("echo.");
     system("echo.");
-    cout << "¡ù¡ù¡ù¡ù¡ù¡ù¡ù¡ù¡ù¡ù¡ù¡ù¡ù¡ù¡ù¡ù¡ù¡ù¡ù¡ù¡ù¡ù¡ù¡ù¡ù¡ù¡ù¡ù¡ù¡ù¡ù¡ù¡ù¡ù¡ù¡ù¡ù¡ù¡ù¡ù¡ù¡ù¡ù¡ù" << endl;
-    cout << "¡ù                                                                                    ¡ù" << endl;
-    cout << "¡ù                   »¶Ó­ÄúÊ¹ÓÃĞ¡Ñ§ËÄÔòÔËËã×Ô¶¯Éú³É³ÌĞò                               ¡ù" << endl;
-    cout << "¡ù                                                                                    ¡ù" << endl;
-    cout << "¡ù                                                                                    ¡ù" << endl;
-    cout << "¡ù                   ÇëÄú°´ÕÕ²½ÖèÀ´Éú³ÉËÄÔòÔËËãÁ·Ï°Ìâ£º                               ¡ù" << endl;
-    cout << "¡ù                                                                                    ¡ù" << endl;
-    cout << "¡ù                   µÚ1²½£ºÇëÉèÖÃÌâÄ¿ÊıÁ¿ <1-100>                                    ¡ù" << endl;
-    cout << "¡ù                   µÚ2²½£ºÇëÉèÖÃ×î´óÊı <1-1000>                                     ¡ù" << endl;
-    cout << "¡ù                   µÚ3²½£ºÇëÑ¡ÔñÊÇ·ñÓĞĞ¡Êı                                          ¡ù" << endl;
-    cout << "¡ù                   µÚ4²½£ºÇëÑ¡ÔñÊÇ·ñÓĞÀ¨ºÅ                                          ¡ù" << endl;
-    cout << "¡ù                   µÚ5²½£ºÇëÑ¡ÔñÊÇ·ñ´òÓ¡µ½ÎÄ¼ş                                      ¡ù" << endl;
-    cout << "¡ù                                                                                    ¡ù" << endl;
-    cout << "¡ù¡ù¡ù¡ù¡ù¡ù¡ù¡ù¡ù¡ù¡ù¡ù¡ù¡ù¡ù¡ù¡ù¡ù¡ù¡ù¡ù¡ù¡ù¡ù¡ù¡ù¡ù¡ù¡ù¡ù¡ù¡ù¡ù¡ù¡ù¡ù¡ù¡ù¡ù¡ù¡ù¡ù¡ù¡ù" << endl;
+    cout << "â€»â€»â€»â€»â€»â€»â€»â€»â€»â€»â€»â€»â€»â€»â€»â€»â€»â€»â€»â€»â€»â€»â€»â€»â€»â€»â€»â€»â€»â€»â€»â€»â€»â€»â€»â€»â€»â€»â€»â€»â€»â€»â€»â€»" << endl;
+    cout << "â€»                                                                                    â€»" << endl;
+    cout << "â€»                   æ¬¢è¿æ‚¨ä½¿ç”¨å°å­¦å››åˆ™è¿ç®—è‡ªåŠ¨ç”Ÿæˆç¨‹åº                               â€»" << endl;
+    cout << "â€»                                                                                    â€»" << endl;
+    cout << "â€»                                                                                    â€»" << endl;
+    cout << "â€»                   è¯·æ‚¨æŒ‰ç…§æ­¥éª¤æ¥ç”Ÿæˆå››åˆ™è¿ç®—ç»ƒä¹ é¢˜ï¼š                               â€»" << endl;
+    cout << "â€»                                                                                    â€»" << endl;
+    cout << "â€»                   ç¬¬1æ­¥ï¼šè¯·è®¾ç½®é¢˜ç›®æ•°é‡ <1-100>                                    â€»" << endl;
+    cout << "â€»                   ç¬¬2æ­¥ï¼šè¯·è®¾ç½®æœ€å¤§æ•° <1-1000>                                     â€»" << endl;
+    cout << "â€»                   ç¬¬3æ­¥ï¼šè¯·é€‰æ‹©æ˜¯å¦æœ‰å°æ•°                                          â€»" << endl;
+    cout << "â€»                   ç¬¬4æ­¥ï¼šè¯·é€‰æ‹©æ˜¯å¦æœ‰æ‹¬å·                                          â€»" << endl;
+    cout << "â€»                   ç¬¬5æ­¥ï¼šè¯·é€‰æ‹©æ˜¯å¦æ‰“å°åˆ°æ–‡ä»¶                                      â€»" << endl;
+    cout << "â€»                                                                                    â€»" << endl;
+    cout << "â€»â€»â€»â€»â€»â€»â€»â€»â€»â€»â€»â€»â€»â€»â€»â€»â€»â€»â€»â€»â€»â€»â€»â€»â€»â€»â€»â€»â€»â€»â€»â€»â€»â€»â€»â€»â€»â€»â€»â€»â€»â€»â€»â€»" << endl;
     system(" echo.");
 }
 
@@ -57,13 +57,13 @@ void menu1()
 {
     system(" echo.");
     showMenu();
-    cout << "µÚ1²½£ºÇëÉèÖÃÌâÄ¿ÊıÁ¿ <1-100> £º" << endl;
+    cout << "ç¬¬1æ­¥ï¼šè¯·è®¾ç½®é¢˜ç›®æ•°é‡ <1-100> ï¼š" << endl;
     cin >> Arithmetic_number;
     while ((Arithmetic_number > 100) || (Arithmetic_number < 1))
     {
-        cout << "ÄúÉèÖÃµÄÌâÄ¿ÊıÄ¿²»·ûºÏÒªÇó(Ì«¶à/Ì«ÉÙ)¡£ < 1 - 100 > " << endl;
+        cout << "æ‚¨è®¾ç½®çš„é¢˜ç›®æ•°ç›®ä¸ç¬¦åˆè¦æ±‚(å¤ªå¤š/å¤ªå°‘)ã€‚ < 1 - 100 > " << endl;
         cout << endl;
-        cout << "Çë°´È·ÈÏ¼üÖØĞÂÊäÈë£¬Ğ»Ğ»£¡" << endl;
+        cout << "è¯·æŒ‰ç¡®è®¤é”®é‡æ–°è¾“å…¥ï¼Œè°¢è°¢ï¼" << endl;
         system("Pause >nul");
         cin >> Arithmetic_number;
     }
@@ -72,13 +72,13 @@ void menu1()
 void menu2()
 {
     system("echo.");
-    cout << "µÚ2²½£ºÇëÉèÖÃ×î´óÊı <1-1000> £º" << endl;
+    cout << "ç¬¬2æ­¥ï¼šè¯·è®¾ç½®æœ€å¤§æ•° <1-1000> ï¼š" << endl;
     cin >> Arithmetic_max;
     while ((Arithmetic_max > 1000) || (Arithmetic_max < 1))
     {
-        cout << "ÄúÉèÖÃµÄ×î´óÊı²»·ûºÏÒªÇó(Ì«´ó/Ì«Ğ¡)¡£ < 1 - 1000 > " << endl;
+        cout << "æ‚¨è®¾ç½®çš„æœ€å¤§æ•°ä¸ç¬¦åˆè¦æ±‚(å¤ªå¤§/å¤ªå°)ã€‚ < 1 - 1000 > " << endl;
         cout << endl;
-        cout << "Çë°´È·ÈÏ¼üÖØĞÂÊäÈë£¬Ğ»Ğ»£¡" << endl;
+        cout << "è¯·æŒ‰ç¡®è®¤é”®é‡æ–°è¾“å…¥ï¼Œè°¢è°¢ï¼" << endl;
         system("Pause >nul");
         cin >> Arithmetic_max;
     }
@@ -87,13 +87,13 @@ void menu2()
 void menu3()
 {
     system("echo.");
-    cout << "µÚ3²½£ºÇëÑ¡ÔñÊÇ·ñÓĞĞ¡Êı£º(ÊäÈë <0> Éú³ÉÕûÊı , ÊäÈë <1> Éú³ÉĞ¡Êı) " << endl;
+    cout << "ç¬¬3æ­¥ï¼šè¯·é€‰æ‹©æ˜¯å¦æœ‰å°æ•°ï¼š(è¾“å…¥ <0> ç”Ÿæˆæ•´æ•° , è¾“å…¥ <1> ç”Ÿæˆå°æ•°) " << endl;
     cin >> Arithmetic_ifdecimal;
     while ((Arithmetic_ifdecimal != 0) && (Arithmetic_ifdecimal != 1))
     {
-        cout << "ÄúÊäÈëµÄÊı²»·ûºÏÒªÇó¡£(ÊäÈë <0> Éú³ÉÕûÊı , ÊäÈë <1> Éú³ÉĞ¡Êı) " << endl;
+        cout << "æ‚¨è¾“å…¥çš„æ•°ä¸ç¬¦åˆè¦æ±‚ã€‚(è¾“å…¥ <0> ç”Ÿæˆæ•´æ•° , è¾“å…¥ <1> ç”Ÿæˆå°æ•°) " << endl;
         cout << endl;
-        cout << "Çë°´È·ÈÏ¼üÖØĞÂÊäÈë£¡" << endl;
+        cout << "è¯·æŒ‰ç¡®è®¤é”®é‡æ–°è¾“å…¥ï¼" << endl;
         system("Pause >nul");
         cin >> Arithmetic_ifdecimal;
     }
@@ -102,13 +102,13 @@ void menu3()
 void menu4()
 {
     system("echo.");
-    cout << "µÚ4²½£ºÇëÑ¡ÔñÊÇ·ñÓĞÀ¨ºÅ£º(ÊäÈë <0> ÎŞÀ¨ºÅ , ÊäÈë <1> ÓĞÀ¨ºÅ)" << endl;
+    cout << "ç¬¬4æ­¥ï¼šè¯·é€‰æ‹©æ˜¯å¦æœ‰æ‹¬å·ï¼š(è¾“å…¥ <0> æ— æ‹¬å· , è¾“å…¥ <1> æœ‰æ‹¬å·)" << endl;
     cin >> Arithmetic_ifbrackets;
     while ((Arithmetic_ifbrackets != 0) && (Arithmetic_ifbrackets != 1))
     {
-        cout << "ÄúÊäÈëµÄÊı²»·ûºÏÒªÇó¡£(ÊäÈë <0> ÎŞÀ¨ºÅ , ÊäÈë <1> ÓĞÀ¨ºÅ) " << endl;
+        cout << "æ‚¨è¾“å…¥çš„æ•°ä¸ç¬¦åˆè¦æ±‚ã€‚(è¾“å…¥ <0> æ— æ‹¬å· , è¾“å…¥ <1> æœ‰æ‹¬å·) " << endl;
         cout << endl;
-        cout << "Çë°´È·ÈÏ¼üÖØĞÂÊäÈë£¡" << endl;
+        cout << "è¯·æŒ‰ç¡®è®¤é”®é‡æ–°è¾“å…¥ï¼" << endl;
         system("Pause >nul");
         cin >> Arithmetic_ifbrackets;
     }
@@ -117,13 +117,13 @@ void menu4()
 void menu5()
 {
     system("echo.");
-    cout << "µÚ5²½£ºÇëÑ¡ÔñÊÇ·ñ´òÓ¡µ½ÎÄ¼ş£º(ÊäÈë <0> ²»´òÓ¡(ÆÁÄ»ÏÔÊ¾) , ÊäÈë <1> ´òÓ¡)" << endl;
+    cout << "ç¬¬5æ­¥ï¼šè¯·é€‰æ‹©æ˜¯å¦æ‰“å°åˆ°æ–‡ä»¶ï¼š(è¾“å…¥ <0> ä¸æ‰“å°(å±å¹•æ˜¾ç¤º) , è¾“å…¥ <1> æ‰“å°)" << endl;
     cin >> Arithmetic_iffile;
     while ((Arithmetic_iffile != 0) && (Arithmetic_iffile != 1))
     {
-        cout << "ÄúÊäÈëµÄÊı²»·ûºÏÒªÇó¡£(ÊäÈë <0> ²»´òÓ¡(ÆÁÄ»ÏÔÊ¾) , ÊäÈë <1> ´òÓ¡) " << endl;
+        cout << "æ‚¨è¾“å…¥çš„æ•°ä¸ç¬¦åˆè¦æ±‚ã€‚(è¾“å…¥ <0> ä¸æ‰“å°(å±å¹•æ˜¾ç¤º) , è¾“å…¥ <1> æ‰“å°) " << endl;
         cout << endl;
-        cout << "Çë°´È·ÈÏ¼üÖØĞÂÊäÈë£¡" << endl;
+        cout << "è¯·æŒ‰ç¡®è®¤é”®é‡æ–°è¾“å…¥ï¼" << endl;
         system("Pause >nul");
         cin >> Arithmetic_iffile;
     }
@@ -141,26 +141,26 @@ void menu()
 
 void Arithmetic_Output_Screen()
 {
-    cout << "+----------------ÒÔÏÂÎª*Ğ¡Ñ§ËÄÔòÔËËã×Ô¶¯Éú³É³ÌĞò*ËùÉú³ÉµÄËÄÔòÔËËãÁ·Ï°Ìâ----------------+" << endl;
+    cout << "+----------------ä»¥ä¸‹ä¸º*å°å­¦å››åˆ™è¿ç®—è‡ªåŠ¨ç”Ÿæˆç¨‹åº*æ‰€ç”Ÿæˆçš„å››åˆ™è¿ç®—ç»ƒä¹ é¢˜----------------+" << endl;
 
     for (int i = 0; i < Arithmetic_number; ++i)
     {
-        /*Ëæ»úÉú³ÉËÄ¸öÕûÊı*/
+        /*éšæœºç”Ÿæˆå››ä¸ªæ•´æ•°*/
         int number1 = rand() % Arithmetic_max;
         int number2 = rand() % Arithmetic_max;
         int number3 = rand() % Arithmetic_max;
         int number4 = rand() % Arithmetic_max;
 
-        /*Ëæ»úÉú³ÉÕûÊıÀ¨ºÅÎ»ÖÃ*/
+        /*éšæœºç”Ÿæˆæ•´æ•°æ‹¬å·ä½ç½®*/
         int BracketNum1 = rand() % Arithmetic_bracket_position;
 
-        /*Ëæ»úÉú³ÉËÄ¸öĞ¡Êı*/
+        /*éšæœºç”Ÿæˆå››ä¸ªå°æ•°*/
         float number5 = rand() / float(RAND_MAX / Arithmetic_max);
         float number6 = rand() / float(RAND_MAX / Arithmetic_max);
         float number7 = rand() / float(RAND_MAX / Arithmetic_max);
         float number8 = rand() / float(RAND_MAX / Arithmetic_max);
 
-        /*Ëæ»úÉú³ÉÈı¸öÔËËã·û*/
+        /*éšæœºç”Ÿæˆä¸‰ä¸ªè¿ç®—ç¬¦*/
         int operation1 = rand() % Arithmetic_operation;
         int operation2 = rand() % Arithmetic_operation;
         int operation3 = rand() % Arithmetic_operation;
@@ -168,7 +168,7 @@ void Arithmetic_Output_Screen()
         char cur_operation2 = Arithmetic_operators[operation2];
         char cur_operation3 = Arithmetic_operators[operation3];
 
-        /*Ëæ»ú²úÉúÀ¨ºÅ()*/
+        /*éšæœºäº§ç”Ÿæ‹¬å·()*/
         int barcket1 = rand() % Arithmetic_bracket;
         char cur_barckets1 = Arithmetic_brackets[barcket1];
         char cur_barckets2 = Arithmetic_brackets[barcket1 + 2];
@@ -230,31 +230,31 @@ void Arithmetic_Output_File()
     if (fp != NULL)
     {
         fprintf(fp, "\n");
-        fprintf(fp, "+----------------ÒÔÏÂÎª*Ğ¡Ñ§ËÄÔòÔËËã×Ô¶¯Éú³É³ÌĞò*ËùÉú³ÉµÄËÄÔòÔËËãÁ·Ï°Ìâ----------------+\n");
+        fprintf(fp, "+----------------ä»¥ä¸‹ä¸º*å°å­¦å››åˆ™è¿ç®—è‡ªåŠ¨ç”Ÿæˆç¨‹åº*æ‰€ç”Ÿæˆçš„å››åˆ™è¿ç®—ç»ƒä¹ é¢˜----------------+\n");
         time_t now = time(0);
         char* dt = ctime(&now);
         tm* gmtm = gmtime(&now);
         dt = asctime(gmtm);
-        fprintf(fp, "                                       UTCÈÕÆÚºÍÊ±¼ä£º%s \n", dt);
+        fprintf(fp, "                                       UTCæ—¥æœŸå’Œæ—¶é—´ï¼š%s \n", dt);
 
         for (int i = 0; i < Arithmetic_number; ++i)
         {
-            /*Ëæ»úÉú³ÉËÄ¸öÕûÊı*/
+            /*éšæœºç”Ÿæˆå››ä¸ªæ•´æ•°*/
             int number1 = rand() % Arithmetic_max;
             int number2 = rand() % Arithmetic_max;
             int number3 = rand() % Arithmetic_max;
             int number4 = rand() % Arithmetic_max;
 
-            /*Ëæ»úÉú³ÉÕûÊıÀ¨ºÅÎ»ÖÃ*/
+            /*éšæœºç”Ÿæˆæ•´æ•°æ‹¬å·ä½ç½®*/
             int BracketNum1 = rand() % Arithmetic_bracket_position;
 
-            /*Ëæ»úÉú³ÉËÄ¸öĞ¡Êı*/
+            /*éšæœºç”Ÿæˆå››ä¸ªå°æ•°*/
             float number5 = rand() / float(RAND_MAX / Arithmetic_max);
             float number6 = rand() / float(RAND_MAX / Arithmetic_max);
             float number7 = rand() / float(RAND_MAX / Arithmetic_max);
             float number8 = rand() / float(RAND_MAX / Arithmetic_max);
 
-            /*Ëæ»úÉú³ÉÈı¸öÔËËã·û*/
+            /*éšæœºç”Ÿæˆä¸‰ä¸ªè¿ç®—ç¬¦*/
             int operation1 = rand() % Arithmetic_operation;
             int operation2 = rand() % Arithmetic_operation;
             int operation3 = rand() % Arithmetic_operation;
@@ -262,13 +262,13 @@ void Arithmetic_Output_File()
             char cur_operation2 = Arithmetic_operators[operation2];
             char cur_operation3 = Arithmetic_operators[operation3];
 
-            /*Ëæ»ú²úÉúÀ¨ºÅ()*/
+            /*éšæœºäº§ç”Ÿæ‹¬å·()*/
             int barcket1 = rand() % Arithmetic_bracket;
             char cur_barckets1 = Arithmetic_brackets[barcket1];
             char cur_barckets2 = Arithmetic_brackets[barcket1 + 2];
-            if (Arithmetic_ifdecimal)  //ÅĞ¶ÏÊÇ·ñÓĞĞ¡Êı
+            if (Arithmetic_ifdecimal)  //åˆ¤æ–­æ˜¯å¦æœ‰å°æ•°
             {
-                if (Arithmetic_ifbrackets)   //ÅĞ¶ÏÊÇ·ñÓĞÀ¨ºÅ
+                if (Arithmetic_ifbrackets)   //åˆ¤æ–­æ˜¯å¦æœ‰æ‹¬å·
                 {
                     if (BracketNum1 == 0)
                     {
@@ -282,7 +282,7 @@ void Arithmetic_Output_File()
                     }
                     if (BracketNum1 == 2)
                     {
-                        fprintf(fp, "NO. %2d : %.2f %c %.2f  %c %c %.2f %c %.2f %c = \n", i, number5, cur_operation1, number6, cur_operation2, cur_barckets1, number7, cur_operation3, number8, cur_barckets1);
+                        fprintf(fp, "NO. %2d : %.2f %c %.2f  %c %c %.2f %c %.2f %c = \n", i, number5, cur_operation1, number6, cur_operation2, cur_barckets1, number7, cur_operation3, number8, cur_barckets2);
                         cout << fixed << setprecision(2) << "NO." << i << " : " << number5 << " " << cur_operation1 << " " << number6 << " " << cur_operation2 << " " << cur_barckets1 << number7 << " " << cur_operation3 << " " << number8 << cur_barckets2 << "=" << endl;
                     }
                 }
@@ -335,21 +335,21 @@ void getTime()
     char* dt = ctime(&now);
     tm* gmtm = gmtime(&now);
     dt = asctime(gmtm);
-    cout << "UTC ÈÕÆÚºÍÊ±¼ä£º" << dt << endl;
-    cout << "±¾µØÈÕÆÚºÍÊ±¼ä£º" << dt << endl;
+    cout << "UTC æ—¥æœŸå’Œæ—¶é—´ï¼š" << dt << endl;
+    cout << "æœ¬åœ°æ—¥æœŸå’Œæ—¶é—´ï¼š" << dt << endl;
     system("echo.");
 }
 
 void showExit()
 {
-    cout << "¡î¡ï¡î¡ï¡î¡ï¡î¡ï¡î¡ï¡î¡ï¡î¡ï¡î¡ï¡î¡ï¡î¡ï¡î¡ï¡î¡ï¡î¡ï¡î¡ï¡î¡ï¡î¡ï¡î¡ï¡î¡ï¡î¡ï¡î¡ï¡î¡ï¡î¡ï" << endl;
-    cout << "¡ï                                                                                    ¡î" << endl;
-    cout << "¡î                         ËÄÔòÔËËãÁ·Ï°ÌâÒÑ¾­³É¹¦Éú³É£¡                               ¡ï" << endl;
-    cout << "¡ï                                                                                    ¡î" << endl;
-    cout << "¡î                        Ğ»Ğ»ÄúµÄÊ¹ÓÃ£¬»¶Ó­ÄúÏÂ´ÎÔÙÀ´£¡                              ¡ï" << endl;
-    cout << "¡ï                                                                                    ¡î" << endl;
-    cout << "¡î¡ï¡î¡ï¡î¡ï¡î¡ï¡î¡ï¡î¡ï¡î¡ï¡î¡ï¡î¡ï¡î¡ï¡î¡ï¡î¡ï¡î¡ï¡î¡ï¡î¡ï¡î¡ï¡î¡ï¡î¡ï¡î¡ï¡î¡ï¡î¡ï¡î¡ï" << endl;
-    cout << "Çë°´È·ÈÏ¼üÍË³ö£¡" << endl;
+    cout << "â˜†â˜…â˜†â˜…â˜†â˜…â˜†â˜…â˜†â˜…â˜†â˜…â˜†â˜…â˜†â˜…â˜†â˜…â˜†â˜…â˜†â˜…â˜†â˜…â˜†â˜…â˜†â˜…â˜†â˜…â˜†â˜…â˜†â˜…â˜†â˜…â˜†â˜…â˜†â˜…â˜†â˜…â˜†â˜…" << endl;
+    cout << "â˜…                                                                                    â˜†" << endl;
+    cout << "â˜†                         å››åˆ™è¿ç®—ç»ƒä¹ é¢˜å·²ç»æˆåŠŸç”Ÿæˆï¼                               â˜…" << endl;
+    cout << "â˜…                                                                                    â˜†" << endl;
+    cout << "â˜†                        è°¢è°¢æ‚¨çš„ä½¿ç”¨ï¼Œæ¬¢è¿æ‚¨ä¸‹æ¬¡å†æ¥ï¼                              â˜…" << endl;
+    cout << "â˜…                                                                                    â˜†" << endl;
+    cout << "â˜†â˜…â˜†â˜…â˜†â˜…â˜†â˜…â˜†â˜…â˜†â˜…â˜†â˜…â˜†â˜…â˜†â˜…â˜†â˜…â˜†â˜…â˜†â˜…â˜†â˜…â˜†â˜…â˜†â˜…â˜†â˜…â˜†â˜…â˜†â˜…â˜†â˜…â˜†â˜…â˜†â˜…â˜†â˜…" << endl;
+    cout << "è¯·æŒ‰ç¡®è®¤é”®é€€å‡ºï¼" << endl;
     system("Pause >nul");
 }
 void main()
